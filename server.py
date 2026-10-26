@@ -586,7 +586,7 @@ async def upload_emoji(name: str, image_path: str | None = None, image_url: str 
         raise ValueError(f"The server already has an emoji named :{name}:")
     image = await load_image(image_path, image_url)
     emoji = await discord().request("POST", f"/guilds/{GUILD_ID}/emojis", json={"name": name, "image": image})
-    return {"id": emoji["id"], "name": emoji["name"], "code": f"<:{emoji['name']}:{emoji['id']}>"}
+    return {"id": emoji["id"], "name": emoji["name"], "code": f"<{'a' if emoji.get('animated') else ''}:{emoji['name']}:{emoji['id']}>"}
 
 
 @mcp.tool(annotations=WRITE)
@@ -595,7 +595,7 @@ async def rename_emoji(emoji_id: str, new_name: str) -> dict:
     if not re.fullmatch(r"\w{2,32}", new_name):
         raise ValueError("Emoji names must be 2-32 letters, numbers or underscores")
     emoji = await discord().request("PATCH", f"/guilds/{GUILD_ID}/emojis/{emoji_id}", json={"name": new_name})
-    return {"id": emoji["id"], "name": emoji["name"], "code": f"<:{emoji['name']}:{emoji['id']}>"}
+    return {"id": emoji["id"], "name": emoji["name"], "code": f"<{'a' if emoji.get('animated') else ''}:{emoji['name']}:{emoji['id']}>"}
 
 
 @mcp.tool(annotations=DESTRUCTIVE)
